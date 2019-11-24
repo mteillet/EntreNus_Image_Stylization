@@ -20,7 +20,7 @@ def main():
     loc = np.where(res >= threshold)
     
     # Drawing Rectangles on the locators where the the pattern has been detected
-    size = 10
+    size = 25
     current = 0
     roiXstart = []
     roiYstart = []
@@ -49,22 +49,22 @@ def main():
 
         # Resize imgBrush to ROI
         roiBrush = cv2.resize(imgBrush,(roiMain.shape[1], roiMain.shape[0]))
+        roiMask = roiBrush.copy()
 
         # Changing the color of the roiBrush to the color of the beauty
         beautyPickColor = imgBeauty[loc[0][current], loc[1][current]]
-        # Assign beauty color to the ROI brush image
-        roiBrush[np.where((roiBrush > 0.1).all(axis=2))] = beautyPickColor
 
         # Adds the last roiBrush on top of the roiMain in order to have overlapping brush strokes 
-        roi_Computed = cv2.add(roiMain, roiBrush)
+        roi_Computed = roiMain
+        # Assigning directly the beautyPickColor in order to avoid adding colors on top of another
+        roi_Computed[np.where((roiMask > 0.1).all(axis=2))] = beautyPickColor
 
         # Place the ROI on a new image size of the grid frame
         imgGrid[startY:endY,startX:endX] = roi_Computed
         
-
+        # Passing onto the next locator
         current += 1
         
-        roiBrush[np.where((roiBrush==[0,0,0]).all(axis=2))] = beautyPickColor
       
     
 
