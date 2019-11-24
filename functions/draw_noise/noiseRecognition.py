@@ -77,7 +77,7 @@ def main():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    #outID = cv2.imwrite('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Outputs\\00_ID_Example_out\\GeneratedGrid.exr', imgNoised)
+    outID = cv2.imwrite('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Outputs\\00_ID_Example_out\\output.exr', imgGrid)
 
 
 if __name__ == '__main__':
