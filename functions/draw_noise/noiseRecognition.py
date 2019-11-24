@@ -1,6 +1,8 @@
 import cv2
 import numpy as np 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+from random import randint
+from random import seed
 
 def main():
     imgBeauty = cv2.imread('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\01_Beauty\\Beauty__RenderCamShape_beauty_ID.0001.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
@@ -20,7 +22,7 @@ def main():
     loc = np.where(res >= threshold)
     
     # Drawing Rectangles on the locators where the the pattern has been detected
-    size = 25
+    size = 20
     current = 0
     roiXstart = []
     roiYstart = []
@@ -43,12 +45,17 @@ def main():
         roiXend.append(endX)
         roiYend.append(endY)
 
+        # defining the seed for the random rotation generation
+        seed(current)
 
         # Defining ROI as an image
         roiMain = imgGrid[startY:endY,startX:endX]
 
         # Resize imgBrush to ROI
         roiBrush = cv2.resize(imgBrush,(roiMain.shape[1], roiMain.shape[0]))
+        
+        rotation = cv2.getRotationMatrix2D((roiMain.shape[1] / 2, roiMain.shape[0] / 2), randint(0, 360), 1)
+        roiBrush = cv2.warpAffine(roiBrush, rotation,(roiMain.shape[1], roiMain.shape[0])) 
         roiMask = roiBrush.copy()
 
         # Changing the color of the roiBrush to the color of the beauty
@@ -65,10 +72,8 @@ def main():
         # Passing onto the next locator
         current += 1
         
-      
-    
 
-    cv2.imshow('BITE', imgGrid)
+    cv2.imshow('Output', imgGrid)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 

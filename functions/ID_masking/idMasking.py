@@ -10,8 +10,8 @@ def main():
 
     # Trying to detect Red
     #                    ([B,G,R])
-    redMasking = np.array([0.0,.0,1.0])
-    lowMasking = np.array([0.0,0.0,0.1])
+    redMasking = np.array([1.0,0.0,0.0])
+    lowMasking = np.array([0.1,0.0,0.0])
 
     mask = cv2.inRange(imgExr, lowMasking, redMasking)
 
