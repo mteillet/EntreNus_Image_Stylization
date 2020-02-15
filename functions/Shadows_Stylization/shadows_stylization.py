@@ -205,7 +205,6 @@ def checkBrushSize(brushSize, locList, imgExr):
     print(str(len(checkedListStartX)), "pixels were kept as usable for brush drawing out of", str(len(locList[0])))
     return(checkedListStartX, checkedListEndX, checkedListStartY, checkedListEndY, randomRotList, randomOffsetList)
 
-
 ####    CHECKING IF POSSIBLE TO EXTEND PIXELS TO BOUNDING BOX
 def drawBrush(locList, imgExr):
     print("Begginning the brush drawing proccess...")
@@ -225,9 +224,6 @@ def drawBrush(locList, imgExr):
     return(placeholderIMG)
     
 ####    ACTUALLY DRAWING THE ROIS ON THE HOLDOUTMATTE
-####    NEED TO ADD AN ORDERING METHOD
-####        - reorder the indexes of the different list elements depending on the color they have with the colorpicker
-####        - Option from light to dark and from dark to light
 def roiDrawing(checkedList, imgExr, brushSize):
     print("Starting to Sample the grid pixels...")
     # Making a black placeholder image before starting to draw the ROIs on it
@@ -295,7 +291,6 @@ def colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr)
         
         current += 1
     return(colorPickList)
-
 
 # Reordering the list depending on the colorPicked values
 # Darkest values are printed last
