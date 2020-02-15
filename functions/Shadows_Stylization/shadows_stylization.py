@@ -241,13 +241,6 @@ def roiDrawing(checkedList, imgExr, brushSize):
 
     #### Detecting and color picking the ROIs returning a colorpicking list which needs to be reordered according to value
     colorPickList = colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr)
-    """
-
-
-
-
-        current += 1
-    """
 
     #### Returned zipped lists are as follow :
     #zippedLists[current][0] = colorPickList[current]
