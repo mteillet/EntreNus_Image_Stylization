@@ -9,8 +9,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 import sys
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+
 
 
 class Ui_MainWindow(object):
@@ -207,14 +208,19 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         ####     Defining what happens exactly when you click
+        
         # Updating Exr path when clicking on exr pick button
         self.exrPick.clicked.connect(self.exrPicking)
+        
         # Updating brush path when clicking on brush pick button
         self.brushPick.clicked.connect(self.brushPicking)
+        
         # Updating the brush size value on change
         self.grid_density_box.valueChanged.connect(self.updateGridDensity)
+        
         # Updating the brush offset value on value change
         self.offset_box.valueChanged.connect(self.updateBrushOffset)
+        
         # Updating the brush size
         self.brushSize_Box.valueChanged.connect(self.updateBrushSize)
         
@@ -226,6 +232,14 @@ class Ui_MainWindow(object):
         
         # Activating the sequence start and end toggles on the image sequence click
         self.checkBox.stateChanged.connect(self.sequenceChecked)
+        
+        # Updating the min sequence
+        self.spinBox_2.valueChanged.connect(self.sequenceMin)
+        
+        # Updating the max sequence
+        self.spinBox.valueChanged.connect(self.sequenceMax)
+        
+        # Updating the max sequence
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -302,23 +316,38 @@ class Ui_MainWindow(object):
     def updateBrushSize(self):
         print("Updated the brush size")
 
-    def previewButton(self):
-        print("Clicked preview button")
-    
-    def computeButton(self):
-        print("Clicked compute all button")
         
     def sequenceChecked(self):
         if self.checkBox.isChecked() == True:
-            print("Checked Sequence")
+            print("Image Sequence")
             self.spinBox.setEnabled(True)
             self.spinBox_2.setEnabled(True)
         else:
             print("No sequence")
             self.spinBox.setEnabled(False)
             self.spinBox_2.setEnabled(False)
+            
+    def sequenceMin(self):
+        print("Changed sequence starting frame")
+        
+    def sequenceMax(self):
+        print("Changed sequence ending frame")
 
+
+    def previewButton(self):
+        print("Clicked preview button")
+        functionPreview()
+        
     
+    def computeButton(self):
+        print("Clicked compute all button")
+
+
+####    BACKEND CODE    ####
+
+def functionPreview():
+    print("function outside of the loop")
+  
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
