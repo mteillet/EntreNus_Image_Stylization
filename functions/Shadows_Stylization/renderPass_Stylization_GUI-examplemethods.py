@@ -85,6 +85,7 @@ class MainWindow(QMainWindow):
     def updateExrFile(self, fileName):
         self.exrLabel.setText(fileName)
         self.exrLabel.adjustSize()
+        print("Updated the original exr")
 
     # Picking brush dialog
     def openBrushDialog(self):
@@ -100,6 +101,9 @@ class MainWindow(QMainWindow):
     def updateBrushFile(self, fileName):
         self.brushLabel.setText(fileName)
         self.brushLabel.adjustSize()
+        print("Updated the brush exr")
+
+
 
 if __name__ == "__main__":
     main()

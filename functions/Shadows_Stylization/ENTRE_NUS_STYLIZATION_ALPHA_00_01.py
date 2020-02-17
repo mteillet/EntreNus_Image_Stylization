@@ -54,10 +54,27 @@ class Ui_MainWindow(object):
         self.brushPath = QtWidgets.QLabel(self.tab_1)
         self.brushPath.setGeometry(QtCore.QRect(220, 90, 781, 21))
         self.brushPath.setObjectName("brushPath")
-        self.gridTitle = QtWidgets.QLabel(self.tab_1)
-        self.gridTitle.setGeometry(QtCore.QRect(10, 130, 331, 21))
+        
+
+        # Adding the brush size input
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.brushSize_Title = QtWidgets.QLabel(self.tab_1)
+        self.brushSize_Title.setGeometry(QtCore.QRect(250, 210, 61, 21))
+        self.brushSize_Title.setObjectName("brushSize_Title")
+        self.brushSize_Box = QtWidgets.QSpinBox(self.tab_1)
+        self.brushSize_Box.setGeometry(QtCore.QRect(310, 210, 51, 22))
+        self.brushSize_Box.setMinimum(2)
+        self.brushSize_Box.setMaximum(2000)
+        self.brushSize_Box.setProperty("value", 8)
+        self.brushSize_Box.setObjectName("brushSize_Box")
+        self.tabWidget.addTab(self.tab_1, "")
+        
 
         # Grid density section
+        self.gridTitle = QtWidgets.QLabel(self.tab_1)
+        self.gridTitle.setGeometry(QtCore.QRect(10, 130, 331, 21))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -193,6 +210,18 @@ class Ui_MainWindow(object):
         self.exrPick.clicked.connect(self.exrPicking)
         # Updating brush path when clicking on brush pick button
         self.brushPick.clicked.connect(self.brushPicking)
+        # Updating the brush size value on change
+        self.grid_density_box.valueChanged.connect(self.updateGridDensity)
+        # Updating the brush offset value on value change
+        self.offset_box.valueChanged.connect(self.updateBrushOffset)
+        # Updating the brush size
+        self.brushSize_Box.valueChanged.connect(self.updateBrushSize)
+        
+        # Clicking on the preview button
+        self.pushButton.clicked.connect(self.previewButton)
+
+        # Clicking on the computeAll button
+        self.pushButton_2.clicked.connect(self.computeButton)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -203,6 +232,8 @@ class Ui_MainWindow(object):
         self.brushTitle.setText(_translate("MainWindow", "2 - Pick the brush.exr you want to use for customization:"))
         self.brushPick.setText(_translate("MainWindow", "Pick brush.exr"))
         self.brushPath.setText(_translate("MainWindow", "Path to your brush exr"))
+        #### Adding the brush size settings
+        self.brushSize_Title.setText(_translate("MainWindow", "Brush Size:"))
         self.gridTitle.setText(_translate("MainWindow", "3 - Input the grid density you want (Brush spacing)"))
         self.offsetTitle.setText(_translate("MainWindow", "4 - Input the brush position randomness you want"))
         self.pushButton.setText(_translate("MainWindow", "Preview"))
@@ -240,6 +271,7 @@ class Ui_MainWindow(object):
     def updateExrFile(self, fileName):
         self.exrPath.setText(fileName)
         self.exrPath.adjustSize()
+        print("Updated the original exr")
 
     # Picking the brush file
     def brushPicking(self):
@@ -255,6 +287,22 @@ class Ui_MainWindow(object):
     def updateBrushFile(self, fileName):
         self.brushPath.setText(fileName)
         self.brushPath.adjustSize()
+        print("Updated the brush exr")
+
+    def updateGridDensity(self):
+        print("Updated the brush size")
+    
+    def updateBrushOffset(self):
+        print("Updated the brush offset")
+
+    def updateBrushSize(self):
+        print("Updated the brush size")
+
+    def previewButton(self):
+        print("Clicked preview button")
+    
+    def computeButton(self):
+        print("Clicked compute all button")
 
     
 if __name__ == "__main__":
