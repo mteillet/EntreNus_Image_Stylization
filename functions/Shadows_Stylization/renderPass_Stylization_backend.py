@@ -40,7 +40,8 @@ def main():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    outID = cv2.imwrite('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\STYLIZED_CamShape_holdoutMatte.0100.exr', imgBrushed)
+    # D:\00_3D\01_PROJECTS\01_PRO\_GITHUB
+    outID = cv2.imwrite('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\STYLIZED_CamShape_holdoutMatte.0100.exr', imgBrushed)
 
     
 
@@ -49,7 +50,7 @@ def main():
 def frameImport():
     # Importing a frame
     #  D:\Python_3D_IMG_Processing-GUI\Inputs\_holdoutMattes
-    imgPath = 'D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\CamShape_holdoutMatte.0100.exr'
+    imgPath = 'D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\CamShape_holdoutMatte.0100.exr'
     imgExr = cv2.imread(imgPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     print("Imported the exr : " + imgPath)
     return(imgExr)
@@ -143,7 +144,7 @@ def noiseDetection(imgMultiplied, imgExr):
 
 
     # Loading white pixel detection pattern
-    imgWhitePx = cv2.imread('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\pixelNoisePattern.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    imgWhitePx = cv2.imread('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\pixelNoisePattern.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
 
     # Findng the noise pattern in the imgGrid
     res = cv2.matchTemplate(imgMultiplied, imgWhitePx, cv2.TM_CCOEFF_NORMED)
@@ -233,7 +234,7 @@ def roiDrawing(checkedList, imgExr, brushSize):
 
     # Importing the brush alpha
     #D:\00_3D\_GITHUB\Python_3D_IMG_Processing\Inputs\_holdoutMattes
-    brushAlpha = cv2.imread('D:\\00_3D\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\Alpha_002.brush_CC0.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    brushAlpha = cv2.imread('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\Alpha_002.brush_CC0.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
 
     #### Detecting and color picking the ROIs returning a colorpicking list which needs to be reordered according to value
     colorPickList = colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr)
