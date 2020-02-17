@@ -118,6 +118,8 @@ class Ui_MainWindow(object):
         self.checkBox = QtWidgets.QCheckBox(self.tab_1)
         self.checkBox.setGeometry(QtCore.QRect(20, 280, 161, 17))
         self.checkBox.setObjectName("checkBox")
+        
+        # Sequence min and max
         self.spinBox = QtWidgets.QSpinBox(self.tab_1)
         self.spinBox.setEnabled(False)
         self.spinBox.setGeometry(QtCore.QRect(90, 340, 42, 22))
@@ -131,8 +133,7 @@ class Ui_MainWindow(object):
         self.spinBox_2.setObjectName("spinBox_2")
         self.sequenceTitle_2 = QtWidgets.QLabel(self.tab_1)
         self.sequenceTitle_2.setGeometry(QtCore.QRect(20, 310, 71, 21))
-
-        # Sequence min and max
+        
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -146,14 +147,14 @@ class Ui_MainWindow(object):
         self.sequenceTitle_3.setFont(font)
         self.sequenceTitle_3.setObjectName("sequenceTitle_3")
         self.tabWidget.addTab(self.tab_1, "")
+        
+
+        # Help section
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setAutoFillBackground(False)
         self.tab_2.setObjectName("tab_2")
         self.help_title_header = QtWidgets.QLabel(self.tab_2)
         self.help_title_header.setGeometry(QtCore.QRect(30, 30, 931, 21))
-
-
-        # Help section
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -222,6 +223,9 @@ class Ui_MainWindow(object):
 
         # Clicking on the computeAll button
         self.pushButton_2.clicked.connect(self.computeButton)
+        
+        # Activating the sequence start and end toggles on the image sequence click
+        self.checkBox.stateChanged.connect(self.sequenceChecked)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -303,6 +307,16 @@ class Ui_MainWindow(object):
     
     def computeButton(self):
         print("Clicked compute all button")
+        
+    def sequenceChecked(self):
+        if self.checkBox.isChecked() == True:
+            print("Checked Sequence")
+            self.spinBox.setEnabled(True)
+            self.spinBox_2.setEnabled(True)
+        else:
+            print("No sequence")
+            self.spinBox.setEnabled(False)
+            self.spinBox_2.setEnabled(False)
 
     
 if __name__ == "__main__":
