@@ -19,4 +19,4 @@ The program needs a renderpass in openEXR format, 32 bits. It generates a grid o
 # Example
 Here is some examples of what you can get with different inputs - here based on an holdoutmatte pass from renderman:
 
-![](/exampleGif/Test_v0_001.gif)
+![](/_exampleGif/Test_v0_001.gif)
