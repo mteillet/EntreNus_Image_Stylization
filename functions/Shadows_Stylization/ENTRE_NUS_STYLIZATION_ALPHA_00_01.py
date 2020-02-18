@@ -425,7 +425,7 @@ def functionPreview():
     # USE THIS FUNCTION TO DISPLAY AN IMAGE
     #displayIMG(exrJson)
     
-    previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
+    #previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
 
 def previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson):
     print("Previewing the image based on your settings...")

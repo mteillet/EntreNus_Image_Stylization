@@ -45,6 +45,17 @@ def sequenceBatch(exrPath, seqMin, seqMax):
         sequenceExr.append((str(newFrames[0][current])) + "." + (str(newFrames[1][current])) + "." + (str(newFrames[2][current])))  
         current += 1
     
+    # Adding back the path before the actual files
+    current = 0
+    listPath = []
+    for i in exrPathSplitted[:-1]:
+        listPath.append(exrPathSplitted[current])
+        listPath.append("\\")
+        current += 1
+    
+    # Joining the path items
+    finalPath = "".join(listPath)
+    
     
     print("Finished programming the batch sequence, writing the output...")
     
@@ -52,7 +63,7 @@ def sequenceBatch(exrPath, seqMin, seqMax):
     outExr = open("00_ChosenExr.json", "w")
     current = 0
     for i in sequenceExr:
-        outExr.write(sequenceExr[current] + "\n")
+        outExr.write(finalPath + sequenceExr[current] + "\n")
         current += 1
     outExr.close
     
