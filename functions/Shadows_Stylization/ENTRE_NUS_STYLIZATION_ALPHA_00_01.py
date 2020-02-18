@@ -418,13 +418,22 @@ def functionPreview():
     print(gridDensityJson)
     
     # USE THIS FUNCTION IN THE FINAL WRITING OUT INTO THE FILE IF YOU WORK WITH A SEQUENCE
+    # CALLS THE FUNCTION IN exrSequenceBatchProcessing.py file
+    # Might need to correct the function and actually add the path before the name of the modified files in the exrSequenceBatchProcessing.py file
     #seqBatch(exrJson, seqMinJson, seqMaxJson)
-
     
+    # USE THIS FUNCTION TO DISPLAY AN IMAGE
+    #displayIMG(exrJson)
+    
+    previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
+
+def previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson):
+    print("Previewing the image based on your settings...")
+    # Need to send the inputs to the renderPass_Stylization_backend.py
 
 # Displaying an image
-def displayIMG():
-    imgPath = 'D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\CamShape_holdoutMatte.0100.exr'
+def displayIMG(exrJson):
+    imgPath = exrJson
     imgDisplay = cv2.imread(imgPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     # Showing a frame
     
