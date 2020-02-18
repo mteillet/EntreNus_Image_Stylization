@@ -11,7 +11,12 @@ from PyQt5.QtGui import QIcon
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
+# BACKEND
+import cv2
+import numpy as np 
+import matplotlib.pyplot as plt 
+from random import seed
+from random import randint
 
 
 class Ui_MainWindow(object):
@@ -281,15 +286,21 @@ class Ui_MainWindow(object):
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(None,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
         if fileName:
-            print(fileName)
             self.updateExrFile(fileName)
-            return(fileName)
+            exrPathString = (fileName)
+            return(exrPathString)
 
     # Updating the EXR path
     def updateExrFile(self, fileName):
         self.exrPath.setText(fileName)
         self.exrPath.adjustSize()
-        print("Updated the original exr")
+        print("Updated the original exr to :")
+        print(fileName)
+        # Writing the path to the exr in a text file for later referencing
+        outExr = open("00_ChosenExr.json", "w")
+        outExr.write(fileName)
+        outExr.close
+        
 
     # Picking the brush file
     def brushPicking(self):
@@ -297,7 +308,6 @@ class Ui_MainWindow(object):
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(None,"QFileDialog.getOpenFileName()", "","All Files (*);;Python Files (*.py)", options=options)
         if fileName:
-            print(fileName)
             self.updateBrushFile(fileName)
             return(fileName)
 
@@ -305,17 +315,35 @@ class Ui_MainWindow(object):
     def updateBrushFile(self, fileName):
         self.brushPath.setText(fileName)
         self.brushPath.adjustSize()
-        print("Updated the brush exr")
+        print("Updated the brush exr to:")
+        print(fileName)
+        # Writing the path to the brush in a text file for later referencing
+        outBrush = open("01_ChosenBrush.json", "w")
+        outBrush.write(fileName)
+        outBrush.close
 
     def updateGridDensity(self):
-        print("Updated the brush size")
+        gridSize = str(self.grid_density_box.value())
+        print("Updated the brush size to", gridSize)
+        outGridSize = open("02_GridSpacing.json", "w")
+        outGridSize.write(gridSize)
+        outGridSize.close
+        
     
     def updateBrushOffset(self):
-        print("Updated the brush offset")
+        brushOffset = str(self.offset_box.value())
+        print("Updated the brush offset to", brushOffset)
+        outBrushOffset = open("04_BrushOffset.json", "w")
+        outBrushOffset.write(brushOffset)
+        outBrushOffset.close
 
     def updateBrushSize(self):
-        print("Updated the brush size")
-
+        brushSizeValue = str(self.brushSize_Box.value())
+        print("Updated the brush size to", brushSizeValue)
+        outBrushSize = open("03_BrushSize.json", "w")
+        outBrushSize.write(brushSizeValue)
+        outBrushSize.close
+        
         
     def sequenceChecked(self):
         if self.checkBox.isChecked() == True:
@@ -336,7 +364,6 @@ class Ui_MainWindow(object):
 
     def previewButton(self):
         print("Clicked preview button")
-        functionPreview()
         
     
     def computeButton(self):
@@ -344,10 +371,33 @@ class Ui_MainWindow(object):
 
 
 ####    BACKEND CODE    ####
+    
 
-def functionPreview():
-    print("function outside of the loop")
+def functionPreview(exrTitle):
+    print(exrTitle)
+
+# Feeding the image to the function when it is chosen as the main EXR
+def feedIMG():
+    #imgPath = self.exrTitle.text()
+    print("1")
+    
+    
+    print(exrPathString)
+
+# Displaying an image
+def displayIMG():
+    imgPath = 'D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\CamShape_holdoutMatte.0100.exr'
+    imgDisplay = cv2.imread(imgPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    # Showing a frame
+    
+    cv2.imshow('image', imgDisplay)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
   
+
+
+# Main execution
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
