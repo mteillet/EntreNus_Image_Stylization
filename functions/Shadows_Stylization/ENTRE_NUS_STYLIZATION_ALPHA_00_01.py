@@ -18,6 +18,9 @@ import matplotlib.pyplot as plt
 from random import seed
 from random import randint
 
+# IMPORT FUNCTION
+from exrSequenceBathcProcessing import sequenceBatch as seqBatch
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -356,14 +359,26 @@ class Ui_MainWindow(object):
             self.spinBox_2.setEnabled(False)
             
     def sequenceMin(self):
-        print("Changed sequence starting frame")
+        seqMin = str(self.spinBox_2.value())
+        print("Changed sequence starting frame to:", seqMin)
+        outSeqMin = open("05_seqMin.json", "w")
+        outSeqMin.write(seqMin)
+        outSeqMin.close
+        
         
     def sequenceMax(self):
         print("Changed sequence ending frame")
+        seqMax = str(self.spinBox.value())
+        print("Changed sequence starting frame to:", seqMax)
+        outSeqMax = open("06_seqMax.json", "w")
+        outSeqMax.write(seqMax)
+        outSeqMax.close
+        
 
 
     def previewButton(self):
         print("Clicked preview button")
+        functionPreview()
         
     
     def computeButton(self):
@@ -373,16 +388,39 @@ class Ui_MainWindow(object):
 ####    BACKEND CODE    ####
     
 
-def functionPreview(exrTitle):
-    print(exrTitle)
+def functionPreview():
+    # Opening the data contained in the json files
+    exrJson = open("00_ChosenExr.json", "r")
+    exrJson = (exrJson.readline())
+    brushJson = open("01_ChosenBrush.json", "r")
+    brushJson = (brushJson.readline())
+    gridDensityJson = open("02_GridSpacing.json", "r")
+    gridDensityJson = (gridDensityJson.readline())
+    brushSizeJson = open("03_BrushSize.json", "r")
+    brushSizeJson = (brushSizeJson.readline())
+    brushOffsetJson = open("04_BrushOffset.json", "r")
+    brushOffsetJson = (brushOffsetJson.readline())
+    seqMinJson = open("05_seqMin.json", "r")
+    seqMinJson = (seqMinJson.readline())
+    seqMaxJson = open("06_seqMax.json", "r")
+    seqMaxJson = (seqMaxJson.readline())
+    
+    # Resuming the data before execution
+    print("The chosen exr is:")
+    print(exrJson)
+    print("The chosen brush file is:")
+    print(brushJson)
+    print("The chosen brush size is:")
+    print(brushSizeJson)
+    print("The chosen brush offset is:")
+    print(brushOffsetJson)
+    print("The chosen grid size is:")
+    print(gridDensityJson)
+    
+    # USE THIS FUNCTION IN THE FINAL WRITING OUT INTO THE FILE IF YOU WORK WITH A SEQUENCE
+    #seqBatch(exrJson, seqMinJson, seqMaxJson)
 
-# Feeding the image to the function when it is chosen as the main EXR
-def feedIMG():
-    #imgPath = self.exrTitle.text()
-    print("1")
     
-    
-    print(exrPathString)
 
 # Displaying an image
 def displayIMG():
