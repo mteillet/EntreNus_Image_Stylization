@@ -50,7 +50,7 @@ def sequenceBatch(exrPath, seqMin, seqMax):
     listPath = []
     for i in exrPathSplitted[:-1]:
         listPath.append(exrPathSplitted[current])
-        listPath.append("\\")
+        listPath.append("/")
         current += 1
     
     # Joining the path items

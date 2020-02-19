@@ -20,6 +20,7 @@ from random import randint
 
 # IMPORT FUNCTION
 from exrSequenceBathcProcessing import sequenceBatch as seqBatch
+from ENTRE_NUS_STYLIZATION_backend import entreNusStylization as enStylize
 
 
 class Ui_MainWindow(object):
@@ -133,12 +134,14 @@ class Ui_MainWindow(object):
         self.spinBox.setEnabled(False)
         self.spinBox.setGeometry(QtCore.QRect(90, 340, 42, 22))
         self.spinBox.setMinimum(1)
-        self.spinBox.setMaximum(5000)
+        self.spinBox.setMaximum(500000)
         self.spinBox.setProperty("value", 100)
         self.spinBox.setObjectName("spinBox")
         self.spinBox_2 = QtWidgets.QSpinBox(self.tab_1)
         self.spinBox_2.setEnabled(False)
         self.spinBox_2.setGeometry(QtCore.QRect(90, 310, 42, 22))
+        self.spinBox_2.setMinimum(0)
+        self.spinBox_2.setMaximum(499999)
         self.spinBox_2.setObjectName("spinBox_2")
         self.sequenceTitle_2 = QtWidgets.QLabel(self.tab_1)
         self.sequenceTitle_2.setGeometry(QtCore.QRect(20, 310, 71, 21))
@@ -247,7 +250,6 @@ class Ui_MainWindow(object):
         # Updating the max sequence
         self.spinBox.valueChanged.connect(self.sequenceMax)
         
-        # Updating the max sequence
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -353,10 +355,16 @@ class Ui_MainWindow(object):
             print("Image Sequence")
             self.spinBox.setEnabled(True)
             self.spinBox_2.setEnabled(True)
+            outSeqCheck = open("07_seqSwitch.json", "w")
+            outSeqCheck.write("YES")
+            outSeqCheck.close
         else:
             print("No sequence")
             self.spinBox.setEnabled(False)
             self.spinBox_2.setEnabled(False)
+            outSeqCheck = open("07_seqSwitch.json", "w")
+            outSeqCheck.write("NO")
+            outSeqCheck.close
             
     def sequenceMin(self):
         seqMin = str(self.spinBox_2.value())
@@ -383,6 +391,7 @@ class Ui_MainWindow(object):
     
     def computeButton(self):
         print("Clicked compute all button")
+        computeAllFunction()
 
 
 ####    BACKEND CODE    ####
@@ -417,32 +426,95 @@ def functionPreview():
     print("The chosen grid size is:")
     print(gridDensityJson)
     
-    # USE THIS FUNCTION IN THE FINAL WRITING OUT INTO THE FILE IF YOU WORK WITH A SEQUENCE
-    # CALLS THE FUNCTION IN exrSequenceBatchProcessing.py file
-    # Might need to correct the function and actually add the path before the name of the modified files in the exrSequenceBatchProcessing.py file
-    #seqBatch(exrJson, seqMinJson, seqMaxJson)
-    
-    # USE THIS FUNCTION TO DISPLAY AN IMAGE
-    #displayIMG(exrJson)
-    
-    #previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
+    previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
 
 def previewFunction(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson):
     print("Previewing the image based on your settings...")
     # Need to send the inputs to the renderPass_Stylization_backend.py
+    computedIMG = enStylize(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
+    # Display the result of the enStylize function for previewing the files
+    displayIMG(computedIMG)
+    # Saving the result to a file
+    #writeIMGout(exrJson, computedIMG)
+
+def computeAllFunction():
+    # Opening the data contained in the json files
+    exrJson = open("00_ChosenExr.json", "r")
+    exrJson = (exrJson.readline())
+    brushJson = open("01_ChosenBrush.json", "r")
+    brushJson = (brushJson.readline())
+    gridDensityJson = open("02_GridSpacing.json", "r")
+    gridDensityJson = (gridDensityJson.readline())
+    brushSizeJson = open("03_BrushSize.json", "r")
+    brushSizeJson = (brushSizeJson.readline())
+    brushOffsetJson = open("04_BrushOffset.json", "r")
+    brushOffsetJson = (brushOffsetJson.readline())
+    seqMinJson = open("05_seqMin.json", "r")
+    seqMinJson = (seqMinJson.readline())
+    seqMaxJson = open("06_seqMax.json", "r")
+    seqMaxJson = (seqMaxJson.readline())
+    
+    # Checking if the image sequence box is ticked or not
+    outSeqJson = open("07_seqSwitch.json", "r")
+    outSeqJson = (outSeqJson.readline())
+    
+    if outSeqJson == "YES":
+        seqBatch(exrJson, seqMinJson, seqMaxJson)
+        exrNumber = open("00_ChosenExr.json", "r")
+        count = 0
+        with open("00_ChosenExr.json", 'r') as f:
+            for line in f:
+                count += 1
+    else:
+        print("No img sequence")
+        count = 1
+    
+    #print("CALCULATING ALL OF THE IMAGES")
+    computeAllImages(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson, count)
+    
+def computeAllImages(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson, count):
+    exrJson = open("00_ChosenExr.json", "r")
+    exrList = (exrJson.readlines())
+    exrList = [x.strip() for x in exrList]
+    print(exrList) 
+    
+    current = 0
+    
+    for i in exrList:
+        exrJson = exrList[current]
+        computedIMG = enStylize(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson)
+        writeIMGout(exrJson, computedIMG)
+        print("Saved :", exrJson)
+        current += 1
+    
+    print("PROCCESS FINISHED")
+    
+    
+    
 
 # Displaying an image
-def displayIMG(exrJson):
-    imgPath = exrJson
-    imgDisplay = cv2.imread(imgPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
-    # Showing a frame
-    
-    cv2.imshow('image', imgDisplay)
+def displayIMG(computedIMG):
+    cv2.imshow('PREVIEW', computedIMG)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
-  
 
+# Save an image
+def writeIMGout(exrJson, computedIMG):
+    splittedExrPath = exrJson.split("/")
+    
+    current = 0
+    outImgPath = []
+    while current < (len(splittedExrPath)-1):
+        outImgPath.append(splittedExrPath[current] + "/")
+        current+=1
+    # Adding the last item + Stylized in front of it to the list
+    outImgPath.append("ENS_" + str(splittedExrPath[current]))
+    STYLIZEDIMGPATH = ("".join(outImgPath))
+    
+    print("Saving file...")
+    print(STYLIZEDIMGPATH)
+    cv2.imwrite(str(STYLIZEDIMGPATH), computedIMG)
+    
 
 # Main execution
 if __name__ == "__main__":
