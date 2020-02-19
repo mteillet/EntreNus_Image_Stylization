@@ -27,13 +27,6 @@ def entreNusStylization(exrJson, brushJson, brushSizeJson, brushOffsetJson, grid
     
     imgBrushed = drawBrush(locList, imgExr, brushSizeJson, brushOffsetJson)
     
-    """
-    # Showing a frame
-    cv2.imshow('image', imgBrushed)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    """
-    
     return(imgBrushed)
     
 def imgImport(exrJson):
