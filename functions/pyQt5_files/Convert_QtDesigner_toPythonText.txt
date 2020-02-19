@@ -1,0 +1,3 @@
+cmd opened in correct folder with the .ui save
+
+pyuic5 -x nameoffile.ui -o nameofoutput.py

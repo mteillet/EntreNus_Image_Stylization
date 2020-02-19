@@ -4,58 +4,72 @@ import matplotlib.pyplot as plt
 from random import seed
 from random import randint
 
-def main():
-    print("Starting Shadows Customization...")
+def entreNusStylization(exrJson, brushJson, brushSizeJson, brushOffsetJson, gridDensityJson):
+    print("backend function call")
+    # Import image for scan
+    imgExr = imgImport(exrJson)
 
-    ####    Importing image for scan
-    imgExr = frameImport()
-
-    ####    Creating a pixel grid based on the distance input of the function noisedGrid
-    #   gridListAll[0] = Pixel X coordinates
-    #   gridListAll[1] = Pixel Y coordinates
-    imgGrid = noiseGrid(imgExr)        
-
-    #### Compare if the pxListAll contains values corresponding to the gridListAll
+    # Creating the pixel grid
+    imgGrid = noiseGrid(imgExr, gridDensityJson)
+    
+    # Multiplying the grid over the imgExr 
     imgMultiplied = cv2.multiply(imgExr, imgGrid)
-
-    ####    Scanning image and returning list of non-black pixels
-    #   pxListAll[0] = Pixel X coordinates
-    #   pxListAll[1] = Pixel Y coordinates
+    
+    # Scanning the pixels for non black ones
     pxListAll = frameScan(imgMultiplied)
 
-
-    # FOR VISUALISATION ONLY - NO NEED TO BE USED FOR ACTUAL SCRIPT   
+    #▲ Turning non white pixels to white in order to run reconnaissance algorithm on the img Multiplied
     imgMultiplied = visualizePixels(pxListAll, imgMultiplied)
     
-    # Noise detection in the multiplied img
-    # locList[0] = pixels X coordinates
-    # locList[1] = pixels Y coordinates
+    # Printing the number of pixels containing information for brush drawing
     locList = noiseDetection(imgMultiplied, imgExr)
     print((str(len(locList[1]))), " pixels were detected as reference points for brush drawing stylization")
-
-    imgBrushed = drawBrush(locList, imgExr)
-
+    
+    imgBrushed = drawBrush(locList, imgExr, brushSizeJson, brushOffsetJson)
+    
+    """
     # Showing a frame
     cv2.imshow('image', imgBrushed)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-    # D:\00_3D\01_PROJECTS\01_PRO\_GITHUB
-    outID = cv2.imwrite('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\STYLIZED_CamShape_holdoutMatte.0100.exr', imgBrushed)
-
+    """
     
-
-
-####    IMG IMPORT
-def frameImport():
-    # Importing a frame
-    #  D:\Python_3D_IMG_Processing-GUI\Inputs\_holdoutMattes
-    imgPath = 'D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_holdoutMattes\\CamShape_holdoutMatte.0100.exr'
+    return(imgBrushed)
+    
+def imgImport(exrJson):
+    imgPath = exrJson
     imgExr = cv2.imread(imgPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
     print("Imported the exr : " + imgPath)
     return(imgExr)
 
-####    GOING THROUGH WHITE PX
+def noiseGrid(imgExr, gridDensityJson):
+    print("Beginning to draw the noise grid")
+
+    # Copying the original EXR and filling it with black
+    imgGrid = imgExr.copy()
+    width = imgGrid.shape[1]
+    height = imgGrid.shape[0]
+    imgGrid[0:height, 0:width] = (0.0,0.0,0.0)
+
+    # Adding the actual noise in the Image
+    #Setting the distance between each white pixel
+    distance = int(gridDensityJson)
+    h0 = 0
+    h1 = 1
+    w0 = 0
+    w1 = 1
+    while h1 < height:
+        while w1 < width: 
+            imgGrid[h0:h1,w0:w1] = (1.0,1.0,1.0)
+            w0 += distance
+            w1 += distance
+        w0 = 0
+        w1 = 1
+        h0 += distance
+        h1 += distance
+
+    return(imgGrid)
+
 def frameScan(imgExr):
     # Scanning the image to detect where the pixel value is above 0
     width = imgExr.shape[1] 
@@ -88,13 +102,10 @@ def frameScan(imgExr):
     print(str(len(pxListX)) + " pixels were detected as containing shadow information")
     return(pxListX, pxListY)
 
-
-####    DETECTING THE VALUE OF THE PXs
 def scanPxValue(x, y, img):
     pxValue = (img[y, x])
     return(pxValue)
 
-####    turning the detected grid pixels to white
 def visualizePixels(pxListAll, imgMultiplied):
     current = 0
     for i in pxListAll[0]:
@@ -102,40 +113,6 @@ def visualizePixels(pxListAll, imgMultiplied):
         current += 1
     return(imgMultiplied)
 
-####    DRAWING THE NOISE GRID
-def noiseGrid(imgExr):
-
-    print("Beginning to draw the noise grid")
-
-    # Copying the original EXR and filling it with black
-    imgGrid = imgExr.copy()
-    width = imgGrid.shape[1]
-    height = imgGrid.shape[0]
-    imgGrid[0:height, 0:width] = (0.0,0.0,0.0)
-
-    # Adding the actual noise in the Image
-    #Setting the distance between each white pixel
-    distance = int(input("What should be the grid pixel separation (recommend at least 4) ?"))
-    #distance = 20
-    gridListX = []
-    gridListY = []
-    h0 = 0
-    h1 = 1
-    w0 = 0
-    w1 = 1
-    while h1 < height:
-        while w1 < width: 
-            imgGrid[h0:h1,w0:w1] = (1.0,1.0,1.0)
-            w0 += distance
-            w1 += distance
-        w0 = 0
-        w1 = 1
-        h0 += distance
-        h1 += distance
-
-    return(imgGrid)
-
-####    NOISE DETECTION
 def noiseDetection(imgMultiplied, imgExr):
     print("Beginning to identify noise pixel data")
     imgBrushed = imgMultiplied.copy()
@@ -173,9 +150,24 @@ def noiseDetection(imgMultiplied, imgExr):
 
     return(roiXstart, roiYstart)
 
-####    CHECKING BRUSH SIZE VS IMAGE BOUNDS
-####        -   if need to add random rotation, add an random seed in this operation as the 4th element of the returned list
-def checkBrushSize(brushSize, locList, imgExr):
+def drawBrush(locList, imgExr, brushSizeJson, brushOffsetJson):
+    print("Begginning the brush drawing proccess...")
+    
+    brushSize = int(brushSizeJson)
+    
+    ####    CHECKING FOR OUT OF BORDER PIXELS - They are returned in this state:
+    #   checkedList[0] = start X
+    #   checkedList[1] = end X
+    #   checkedList[2] = start Y
+    #   checkedList[3] = end Y
+    #   checkedList[4] = random rotation assigned to the point index
+    #   checkedList[5] = random offset assigned to the point index
+    checkedList = checkBrushSize(brushSize, locList, imgExr, brushOffsetJson)
+
+    placeholderIMG = roiDrawing(checkedList, imgExr, brushSize)
+    return(placeholderIMG)
+
+def checkBrushSize(brushSize, locList, imgExr, brushOffsetJson):
     checkedListStartX = []
     checkedListStartY = []
     checkedListEndX = []
@@ -183,7 +175,7 @@ def checkBrushSize(brushSize, locList, imgExr):
     randomOffsetList = []
     randomRotList = []
     current = 0
-    randomOffset = int(input("How much offset would you like ?"))
+    randomOffset = int(brushOffsetJson)
 
     print("Checking brush size for out of bounds pixels")
     for i in locList[0]:
@@ -206,25 +198,6 @@ def checkBrushSize(brushSize, locList, imgExr):
     print(str(len(checkedListStartX)), "pixels were kept as usable for brush drawing out of", str(len(locList[0])))
     return(checkedListStartX, checkedListEndX, checkedListStartY, checkedListEndY, randomRotList, randomOffsetList)
 
-####    CHECKING IF POSSIBLE TO EXTEND PIXELS TO BOUNDING BOX
-def drawBrush(locList, imgExr):
-    print("Begginning the brush drawing proccess...")
-    
-    brushSize = input("What should be the brush size ?")
-    
-    ####    CHECKING FOR OUT OF BORDER PIXELS - They are returned in this state:
-    #   checkedList[0] = start X
-    #   checkedList[1] = end X
-    #   checkedList[2] = start Y
-    #   checkedList[3] = end Y
-    #   checkedList[4] = random rotation assigned to the point index
-    #   checkedList[5] = random offset assigned to the point index
-    checkedList = checkBrushSize(brushSize, locList, imgExr)
-
-    placeholderIMG = roiDrawing(checkedList, imgExr, brushSize)
-    return(placeholderIMG)
-    
-####    ACTUALLY DRAWING THE ROIS ON THE HOLDOUTMATTE
 def roiDrawing(checkedList, imgExr, brushSize):
     print("Starting to Sample the grid pixels...")
     # Making a black placeholder image before starting to draw the ROIs on it
@@ -253,7 +226,6 @@ def roiDrawing(checkedList, imgExr, brushSize):
 
     return(placeholderIMG)
 
-####    DETECTING THE ROIS AND RETURNING A LIST OF VALUES COLORPICKED ON THE HOLDOUTMATTE
 def colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr):
     print("Start color picking the grid Pixels...")
     current = 0
@@ -293,8 +265,6 @@ def colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr)
         current += 1
     return(colorPickList)
 
-# Reordering the list depending on the colorPicked values
-# Darkest values are printed last
 def reorderList(checkedList, colorPickList):
     print("Re-ordering ", str(len(colorPickList)), "pixels based on luminance...")
 
@@ -307,7 +277,6 @@ def reorderList(checkedList, colorPickList):
     print("Pixels re-ordering completed !")
     return(zippedLists)
 
-# Drawing the actual brushes on the image using the re-ordered zip list
 def brushDrawing(zippedLists, brushAlpha, placeholderIMG, colorPickList, imgExr):
     print("Starting to draw brushes on the luminance re-ordered ROIs...")
     
@@ -358,6 +327,5 @@ def brushDrawing(zippedLists, brushAlpha, placeholderIMG, colorPickList, imgExr)
     return(placeholderIMG)
 
 
-
-if __name__ == "__main__":
-    main()
+if __name__ == "__entreNusStylization__":
+    entreNusStylization()
