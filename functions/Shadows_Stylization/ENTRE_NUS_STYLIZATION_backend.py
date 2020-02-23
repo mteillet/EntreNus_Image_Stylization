@@ -114,7 +114,7 @@ def noiseDetection(imgMultiplied, imgExr):
 
 
     # Loading white pixel detection pattern
-    imgWhitePx = cv2.imread('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\pixelNoisePattern.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    imgWhitePx = cv2.imread('pixelNoisePattern.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
 
     # Findng the noise pattern in the imgGrid
     res = cv2.matchTemplate(imgMultiplied, imgWhitePx, cv2.TM_CCOEFF_NORMED)
