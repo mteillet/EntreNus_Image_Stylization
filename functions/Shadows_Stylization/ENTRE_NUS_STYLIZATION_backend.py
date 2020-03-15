@@ -199,8 +199,9 @@ def roiDrawing(checkedList, imgExr, brushSize):
     colorPickList = []
 
     # Importing the brush alpha
+    brushPath = brushJson
     #D:\00_3D\_GITHUB\Python_3D_IMG_Processing\Inputs\_holdoutMattes
-    brushAlpha = cv2.imread('D:\\00_3D\\01_PROJECTS\\01_PRO\\_GITHUB\\Python_3D_IMG_Processing\\Inputs\\_Patterns\\Alpha_002.brush_CC0.exr', cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
+    brushAlpha = cv2.imread(brushPath, cv2.IMREAD_ANYCOLOR | cv2.IMREAD_ANYDEPTH)
 
     #### Detecting and color picking the ROIs returning a colorpicking list which needs to be reordered according to value
     colorPickList = colorPicking(checkedList, brushAlpha, placeholderIMG, colorPickList, imgExr)
