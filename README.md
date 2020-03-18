@@ -12,6 +12,8 @@ The GridGenerator.cpp is aimed to be used in order to get control the density of
 The BrushGenerator_Flat.cpp generated brushes on top of your input, keeping the input color, where the value of the input is greater than 0.0f it makes sur the lighter brushes are kept on top of the darker ones.
 # BrushGenerator_Nrm.cpp
 The BrushGenerator_Nrm.cpp generates brushes in the same manner as the BrushGenerator_Flat.cpp. The only difference is it takes the normal pass of your renders in order to scale down the brushes when the Z (blue) value of your NRM pass is greater than 0. It allows to have a better conservation of the edges and volumes of your renders. When the camera is straight. - The best method would to get the camera vector and use a dot product between the camera vector and the normal pass vector of each pixels, which should soon be coming in another node.
+# BrushGenerator_CamVector.cpp
+The BrushGenerator_CamVector.cpp generates brushes in the same manner as the previous ones, but it takes a vector input (ideally your camera's) in order to scale the brushes depending on their facing ratio to the camera. You can run BrushGenerator_CamVector_GetVector.py in your maya scene with your camera selected in order to get its current vector and input it into the node in Nuke. You can tweak the scaling of the brushes by altering the values you have entered.
 
 
 # Python_Standalone version

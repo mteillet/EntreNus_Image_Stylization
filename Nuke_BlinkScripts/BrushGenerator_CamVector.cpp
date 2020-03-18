@@ -1,13 +1,11 @@
-float nrmRotation(float NRMx, float NRMy, float NRMz, float rotOffset, float camVectorX, float camVectorY, float camVectorZ)
+float nrmRotation(float NRMx, float NRMy, float NRMz, float rotOffset)
 {
   // when value is 0.0, 0.0, 1.0 - The normal si pointing towards the cam - no rotation needed 
   // when value is 1.0, 0.0, 0.0 - The normal is pointing sideways   
   // when value is 1.0, 0.0, 0.0 - The normal is pointing up axis 
   // The RGB values from the nrm pass are defining the vectors
   float3 vectNRM = (NRMx, NRMy, NRMz);
-  float3 vectCAMcompute = (camVectorX, camVectorY, camVectorZ);
-  //float nrmRotation = NRMx + NRMy + rotOffset;
-  float nrmRotation = ((sqrt(vectCAMcompute.x * vectCAMcompute.x) * sqrt(NRMx * NRMx)) + (sqrt(vectCAMcompute.y * vectCAMcompute.y) * sqrt(NRMy * NRMy)) + (vectCAMcompute.z * NRMz));
+  float nrmRotation = NRMx + NRMy + rotOffset;
   return nrmRotation;
 }
 
@@ -155,14 +153,16 @@ kernel SaturationKernel : ImageComputationKernel<ePixelWise>
             const float4 nrm = nrmInput();
             // Calling the rotation function
             // Trying new function for the angle conversion
-            const float angle = nrmRotation(nrm.x, nrm.y, nrm.z, rotOffset, camVectorX, camVectorY, camVectorZ);
+            const float angle = nrmRotation(nrm.x, nrm.y, nrm.z, rotOffset);
+            // Dot Product
+            const float scaleProduct = ((sqrt(camVectorX * camVectorX) * sqrt(nrm.x * nrm.x)) + (sqrt(camVectorY * camVectorY) * sqrt(nrm.y * nrm.y)) + (sqrt(camVectorZ * camVectorZ) * sqrt(nrm.z * nrm.z)));
 
             // Adding the angles to the write positions of the brushes for moving the brush before writing its color
             // the *(nrm.z) is responsible for the scaling of the brushes when the blue value of the normal pass is low
             //writePos.x = (orig.x + (rpos.x * cos(angle) - rpos.y * sin(angle)) * (nrm.z));
             //writePos.y = (orig.y + (rpos.x * sin(angle) + rpos.y * cos(angle)) * (nrm.z));
-            writePos.x = (orig.x + (rpos.x * cos(angle) - rpos.y * sin(angle)) * (angle));
-            writePos.y = (orig.y + (rpos.x * sin(angle) + rpos.y * cos(angle)) * (angle));
+            writePos.x = (orig.x + (rpos.x * cos(angle) - rpos.y * sin(angle)) * (scaleProduct));
+            writePos.y = (orig.y + (rpos.x * sin(angle) + rpos.y * cos(angle)) * (scaleProduct));
 
             float4 brushHsv = hsv(brushColor);
             if (!OutOfBounds(writePos, Resolution) && brushHsv.z >= brushValueMin)
